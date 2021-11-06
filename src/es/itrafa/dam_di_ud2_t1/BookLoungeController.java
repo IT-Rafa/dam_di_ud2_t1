@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,9 +19,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -28,15 +34,23 @@ import javafx.stage.Stage;
  * @author rafa
  */
 public class BookLoungeController implements Initializable {
-
+    @FXML
+    private VBox eventTypeGroup_VBox;
     @FXML
     private Button exit_Btn;
     @FXML
     private Button back_Btn;
     @FXML
-    private ComboBox eventType_ComboBox;
+    private ChoiceBox cucineType_ChoiceBox;
     @FXML
     private DatePicker dateEvent_DatePicker;
+    final ToggleGroup eventTypeTGroup = new ToggleGroup();
+    @FXML
+    private RadioButton banket_RadioBtn;
+    @FXML
+    private RadioButton day_RadioBtn;
+    @FXML
+    private RadioButton congress_RadioBtn;
 
     /**
      * Initializes the controller class.
@@ -44,7 +58,16 @@ public class BookLoungeController implements Initializable {
     @Override
 
     public void initialize(URL url, ResourceBundle rb) {
-        eventType_ComboBox.getItems().addAll("Banquete", "Jornada", "Congreso");
+      eventTypeGroup_VBox.getStyleClass().add("vbox");
+
+        ObservableList<String> transportTypes
+                = FXCollections.observableArrayList("Buffet", "Carta", "Cita con chef", "No precisa");
+        cucineType_ChoiceBox.setItems(transportTypes);
+
+        banket_RadioBtn.setToggleGroup(eventTypeTGroup);
+        day_RadioBtn.setToggleGroup(eventTypeTGroup);
+        congress_RadioBtn.setToggleGroup(eventTypeTGroup);
+
     }
 
     @FXML
