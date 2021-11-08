@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -45,13 +46,13 @@
       </BorderPane>
    </bottom>
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane prefHeight="281.0" prefWidth="459.0" styleClass="tabContainer" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab text="Contacto">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="277.0" prefWidth="464.0">
                      <children>
-                        <TextField layoutX="126.0" layoutY="86.0" minWidth="100.0" prefHeight="23.0" prefWidth="115.0" />
+                        <TextField fx:id="tfno_TextField" layoutX="126.0" layoutY="86.0" minWidth="100.0" onAction="#tfno_TextFieldHandler" prefHeight="23.0" prefWidth="115.0" />
                         <Label layoutX="55.0" layoutY="52.0" text="Nombre: ">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
@@ -62,7 +63,7 @@
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font>
                         </Label>
-                        <TextField layoutX="126.0" layoutY="49.0" minWidth="100.0" prefHeight="23.0" prefWidth="217.0" />
+                        <TextField fx:id="name_TextField" layoutX="126.0" layoutY="49.0" minWidth="100.0" prefHeight="23.0" prefWidth="217.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -71,23 +72,23 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <DatePicker fx:id="dateEvent_DatePicker" layoutX="43.0" layoutY="56.0" />
-                        <Label layoutX="43.0" layoutY="39.0" text="Fecha evento:">
+                        <DatePicker fx:id="dateEvent_DatePicker" layoutX="14.0" layoutY="96.0" />
+                        <Label layoutX="14.0" layoutY="77.0" text="Fecha evento:">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font></Label>
-                        <Label layoutX="43.0" layoutY="170.0" text="Tipo cocina: ">
+                        <Label layoutX="14.0" layoutY="175.0" text="Tipo cocina: ">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font></Label>
-                        <Label layoutX="43.0" layoutY="131.0" text="Nº Personas evento: ">
+                        <Label layoutX="14.0" layoutY="139.0" text="Nº Personas evento: ">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font></Label>
-                        <TextField layoutX="203.0" layoutY="127.0" prefHeight="23.0" prefWidth="31.0" />
-                        <VBox fx:id="eventTypeGroup_VBox" layoutX="300.0" layoutY="39.0" prefHeight="98.0" prefWidth="213.0">
+                        <TextField fx:id="cantPeople_TxtField" layoutX="169.0" layoutY="135.0" onAction="#cantPeople_TxtFieldHandler" prefHeight="23.0" prefWidth="31.0" />
+                        <VBox fx:id="eventTypeGroup_VBox" layoutX="220.0" layoutY="28.0" onMouseClicked="#eventTypeGroup_VBoxHandler" prefHeight="122.0" prefWidth="183.0" styleClass="buttonGroup" stylesheets="@bookLounge.css">
                            <children>
-                              <Label text="Tipo evento: ">
+                              <Label fx:id="eventType_Gro" text="Tipo evento: ">
                                  <font>
                                     <Font name="DejaVu Sans Bold" size="13.0" />
                                  </font>
@@ -133,26 +134,63 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </opaqueInsets>
                         </VBox>
-                        <ToggleButton layoutX="299.0" layoutY="179.0" mnemonicParsing="false" text="Requiere habitaciones: NO">
+                        <ToggleButton fx:id="roomsNeed_ToggleButton" layoutX="203.0" layoutY="177.0" mnemonicParsing="false" onAction="#roomNeedToggleButtonHandler" prefHeight="36.0" prefWidth="218.0" styleClass="toggleButton-false" text="Requiere habitaciones: NO" textFill="WHITE">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding></ToggleButton>
-                        <ChoiceBox fx:id="cucineType_ChoiceBox" layoutX="43.0" layoutY="186.0" prefWidth="150.0" />
+                        <ChoiceBox fx:id="cucineType_ChoiceBox" layoutX="14.0" layoutY="193.0" onDragDone="#cucineType_ChoiceBoxHandler" prefWidth="150.0" />
+                        <Label layoutX="17.0" layoutY="20.0" text="Salón:">
+                           <font>
+                              <Font name="DejaVu Sans Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <ChoiceBox fx:id="lounge_ChoiceBox" layoutX="14.0" layoutY="38.0" onDragDone="#lounge_ChoiceBoxHandler" prefHeight="21.0" prefWidth="171.0" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
         </tabs>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
       </TabPane>
    </center>
    <top>
-      <Label text="Reserva Salón" BorderPane.alignment="CENTER">
+      <Label text="Reserva Salón" BorderPane.alignment="TOP_CENTER">
          <font>
             <Font size="30.0" />
          </font>
       </Label>
    </top>
+   <right>
+      <BorderPane prefHeight="285.0" prefWidth="125.0" styleClass="asideContainer" BorderPane.alignment="CENTER">
+         <bottom>
+            <VBox alignment="CENTER" prefHeight="49.0" prefWidth="101.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="104.0" text="Guardar">
+                     <font>
+                        <Font name="DejaVu Sans Bold" size="15.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="15.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+         </bottom>
+         <top>
+            <ProgressIndicator fx:id="form_ProgressIndicator" minHeight="100.0" minWidth="100.0" onMouseClicked="#updateProgress" progress="0.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets top="30.0" />
+               </BorderPane.margin>
+            </ProgressIndicator>
+         </top>
+         <BorderPane.margin>
+            <Insets bottom="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </BorderPane>
+   </right>
 </BorderPane>

@@ -5,12 +5,43 @@
 .mainFxmlClass {
 
 }
-.vbox {
+.buttonGroup {
     -fx-padding: 10;
     -fx-background-color: ghostwhite;
     -fx-border-style: solid inside;
     -fx-border-width: 2;
 
     -fx-border-radius: 5;
-    -fx-border-color: black;
+    -fx-border-color: gray;
+}
+
+.tabContainer {
+    -fx-padding: 10;
+    -fx-background-color: ghostwhite;
+    -fx-border-style: solid inside;
+    -fx-border-width: 2;
+
+    -fx-border-radius: 5;
+    -fx-border-color: gray;
+}
+
+
+.asideContainer {
+    -fx-padding: 10;
+    -fx-background-color: ghostwhite;
+    -fx-border-width: 2;
+
+    -fx-border-radius: 5;
+    -fx-border-color: gray;
+}
+
+
+.toggleButton-false {
+    -fx-border-radius: 10;
+    -fx-background-color: red;
+}
+
+.toggleButton-true {
+    -fx-border-radius: 5;
+    -fx-background-color: green;
 }
