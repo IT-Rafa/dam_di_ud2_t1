@@ -6,13 +6,13 @@ package es.itrafa.dam_di_ud2_t1;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,23 +20,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -51,15 +47,13 @@ public class BookLoungeController implements Initializable {
     @FXML
     private ProgressIndicator form_ProgressIndicator;
     @FXML
-    private Label eventType_Gro;
+    private Button save_Button;
 
     private enum data {
         NAME, TFNO, LOUNGE, EVENTTYPE, EVENTDATE, CUCINETYPE, CANTPEOPLE
     };
     private boolean[] progress;
 
-    @FXML
-    private VBox eventTypeGroup_VBox;
     @FXML
     private Button exit_Btn;
     @FXML
@@ -112,8 +106,10 @@ public class BookLoungeController implements Initializable {
         });
 
         // Add values to choose in cucineTypes
-        cucineType_ChoiceBox.getItems().add("Salón Habana");
-        cucineType_ChoiceBox.getItems().add("Otro Salón");
+        cucineType_ChoiceBox.getItems().add("Buffet");
+        cucineType_ChoiceBox.getItems().add("Carta");
+        cucineType_ChoiceBox.getItems().add("Cita con chef");
+        cucineType_ChoiceBox.getItems().add("No precisa");
 
         // Add listener to lounge. OPTIONS IN SCENE BUILDER DON´T WORK OK
         cucineType_ChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -123,9 +119,10 @@ public class BookLoungeController implements Initializable {
             }
         });
 
-        ObservableList<String> cucineTypes
-                = FXCollections.observableArrayList("Buffet", "Carta", "Cita con chef", "No precisa");
-        cucineType_ChoiceBox.setItems(cucineTypes);
+        dateEvent_DatePicker.valueProperty().addListener((ov, oldValue, newValue) -> {
+            dateEvent_DatePickerHandlerLocalDate(newValue);
+
+        });
 
         // group radioButton to choose only one
         banket_RadioBtn.setToggleGroup(eventTypeTGroup);
@@ -136,17 +133,22 @@ public class BookLoungeController implements Initializable {
 
     @FXML
     private void updateProgress() {
-        LOGGER.info("Actualizando barra progreso");
+        LOGGER.info("updating progressBar");
         double actualProgress = 0;
 
-        for (boolean v : progress) {
-            if (v) {
+        for (boolean valid : progress) {
+            if (valid) {
                 actualProgress++;
             }
         }
 
         actualProgress /= progress.length;
         form_ProgressIndicator.setProgress(actualProgress);
+        if (actualProgress >= 1) {
+            save_Button.setDisable(false);
+        } else {
+            save_Button.setDisable(true);
+        }
     }
 
     @FXML
@@ -175,89 +177,173 @@ public class BookLoungeController implements Initializable {
             stage.show();
 
         } catch (IOException ex) {
-            LOGGER.severe("Posible error al acceder al recurso xml");
+            LOGGER.severe("Posible error al acceder al recurso xml: booksMenu.fxml");
         }
 
+    }
+
+    @FXML
+    private void showConfirmation(ActionEvent event) {
+        String msgLog = String.format("show confirmation");
+        LOGGER.info(msgLog);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+
+        alert.setTitle("Confirmación");
+        alert.setContentText("Confirma que los datos son correctos");
+
+        Optional<ButtonType> option = alert.showAndWait();
+
+        if (option.get() == ButtonType.OK) {
+            LOGGER.info("Datos enviados (en realidad, no)");
+            
+        } else if (option.get() == ButtonType.CANCEL) {
+            LOGGER.info("Operación cancelada");
+        } else {
+            LOGGER.info("no se");
+        }
     }
 
     // CHECK INPUT AND PROGRESS BAR METHODS
     // NAME
     @FXML
     private void name_TextFieldHandler(KeyEvent event) {
-        LOGGER.info("nombre modificado");
+        boolean valid;
+        String name = name_TextField.getText();
 
-        // check value and mark it if is ok
-        progress[data.NAME.ordinal()] = !name_TextField.getText().isEmpty();
-        // calculate and show new bar progress value
+        String msgLog = String.format("name changed to %s", name);
+        LOGGER.info(msgLog);
+
+        String pattern = "[\\D \\-,\\.'´]+"; // patrón nombre mejorable (depende pais)
+        ObservableList<String> cssClassList = name_TextField.getStyleClass();
+        cssClassList.remove("noValid");
+        if (name.isEmpty() || !name.matches(pattern)) {
+            valid = false;
+            cssClassList.add("noValid");
+
+        } else {
+            valid = true;
+
+        }
+
+        progress[data.NAME.ordinal()] = valid;
         updateProgress();
     }
 
     // TFNO
     @FXML
     private void tfno_TextFieldHandler(KeyEvent event) {
-        LOGGER.info("telefono modificado");
+        boolean valid;
+        String tfno = tfno_TextField.getText();
 
-        // check value and mark it if is ok
-        progress[data.TFNO.ordinal()] = !tfno_TextField.getText().isEmpty();
-        // calculate and show new bar progress value
+        String msgLog = String.format("tfno changed to %s", tfno);
+        LOGGER.info(msgLog);
+
+        String pattern = "[\\d \\-()+]+"; // patrón tfno mejorable (depende pais)
+        ObservableList<String> cssClassList = tfno_TextField.getStyleClass();
+        cssClassList.remove("noValid");
+        if (tfno.isEmpty() || !tfno.matches(pattern)) {
+            valid = false;
+            cssClassList.add("noValid");
+
+        } else {
+            valid = true;
+        }
+
+        progress[data.TFNO.ordinal()] = valid;
         updateProgress();
     }
 
     // LOUNGE 
     private void lounge_ChoiceBoxHandler(String newValue) {
-        LOGGER.info("lounge modificado a "+ newValue);
+        String msgLog = String.format("lounge changed to %s", newValue);
+        LOGGER.info(msgLog);
+
         progress[data.LOUNGE.ordinal()] = true;
         updateProgress();
     }
 
     // EVENTTYPE
     @FXML
-    private void eventTypeGroup_VBoxHandler(MouseEvent event) {
-        LOGGER.info("tipo evento modificado");
+    private void eventTypeGroup_RButtonHandler(MouseEvent event) {
+        RadioButton button = (RadioButton) event.getSource();
+        String msgLog = String.format("lounge changed to %s", button.getText());
+        LOGGER.info(msgLog);
 
-        progress[data.EVENTTYPE.ordinal()] = eventTypeTGroup.getSelectedToggle().isSelected();
+        progress[data.EVENTTYPE.ordinal()] = true;
         updateProgress();
     }
+
     // EVENTDATE
+    private void dateEvent_DatePickerHandlerLocalDate(LocalDate newDate) {
+        String msgLog = String.format("dateEvent changed to %s", newDate.toString());
+        LOGGER.info(msgLog);
+
+        boolean valid;
+        ObservableList<String> cssClassList = dateEvent_DatePicker.getStyleClass();
+        cssClassList.remove("noValid");
+
+        if (newDate.isBefore(LocalDate.now())) {
+            cssClassList.add("noValid");
+            valid = false;
+        } else {
+            valid = true;
+        }
+
+        progress[data.EVENTDATE.ordinal()] = valid;
+        updateProgress();
+    }
 
     // CUCINETYPE
     private void cucineType_ChoiceBoxHandler(String newValue) {
-        LOGGER.info("cucineType modificado a "+ newValue);
+        LOGGER.info("cucineType modificado a " + newValue);
         progress[data.CUCINETYPE.ordinal()] = true;
-        updateProgress();
-    }
-
-    private void cucineType_ChoiceBoxHandler(ScrollEvent event) {
-        LOGGER.info("tipo cocina modificado");
-
-        progress[data.CUCINETYPE.ordinal()] = cucineType_ChoiceBox.getValue() == null;
         updateProgress();
     }
 
     // CANTPEOPLE
     @FXML
     private void cantPeople_TextFieldHandler(KeyEvent event) {
-        LOGGER.info("cantidadGente modificado");
+        boolean valid;
+        String cantPeople = cantPeople_TextField.getText();
 
-        // check value and mark it if is ok
-        progress[data.CANTPEOPLE.ordinal()] = !cantPeople_TextField.getText().isEmpty();
-        // calculate and show new bar progress value
+        String msgLog = String.format("cantPeople changed to %s", cantPeople);
+        LOGGER.info(msgLog);
+
+        String pattern = "\\d{1,4}";
+
+        ObservableList<String> cssClassList = cantPeople_TextField.getStyleClass();
+        cssClassList.remove("noValid");
+        if (cantPeople.isEmpty() || !cantPeople.matches(pattern)) {
+            valid = false;
+            cssClassList.add("noValid");
+
+        } else {
+            valid = true;
+
+        }
+
+        progress[data.CANTPEOPLE.ordinal()] = valid;
         updateProgress();
     }
 
     // NEEDROMS ( NO PROGRESS CHECK cause both options are valid)
     @FXML
     private void roomNeedToggleButtonHandler(ActionEvent event) {
-        LOGGER.info("necesitanHabitaciones modificado");
+        String msgLog = String.format("roomsNeed changed to %s", roomsNeed_ToggleButton.isSelected());
+        LOGGER.info(msgLog);
 
-        roomsNeed_ToggleButton.getStyleClass().clear();
+        ObservableList<String> cssClassList = roomsNeed_ToggleButton.getStyleClass();
 
         if (roomsNeed_ToggleButton.isSelected()) {
-            roomsNeed_ToggleButton.getStyleClass().add("toggleButton-true");
-            roomsNeed_ToggleButton.setText("Requiere habitaciones: SÍ");
+            cssClassList.remove("toggleButton-false");
+            cssClassList.add("toggleButton-true");
+            roomsNeed_ToggleButton.setText("Requieren habitaciones: SÍ");
         } else {
-            roomsNeed_ToggleButton.getStyleClass().add("toggleButton-false");
-            roomsNeed_ToggleButton.setText("Requiere habitaciones: NO");
+            cssClassList.remove("toggleButton-true");
+            cssClassList.add("toggleButton-false");
+            roomsNeed_ToggleButton.setText("Requieren habitaciones: NO");
         }
     }
 

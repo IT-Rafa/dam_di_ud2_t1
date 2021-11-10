@@ -45,3 +45,7 @@
     -fx-border-radius: 5;
     -fx-background-color: green;
 }
+
+.noValid{
+    -fx-border-color: red;
+}

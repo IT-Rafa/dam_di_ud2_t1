@@ -1,0 +1,4 @@
+
+- Pendiente
+    - Mostrar datos al guardar en dialog alert
+    - Comprobar si falta algo mas

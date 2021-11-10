@@ -12,6 +12,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
@@ -31,6 +32,9 @@
                <BorderPane.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </BorderPane.margin>
+               <tooltip>
+                  <Tooltip text="Finalizar programa" />
+               </tooltip>
             </Button>
          </left>
          <right>
@@ -41,6 +45,9 @@
                <BorderPane.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </BorderPane.margin>
+               <tooltip>
+                  <Tooltip text="Volver al menú anterior" />
+               </tooltip>
             </Button>
          </right>
       </BorderPane>
@@ -48,11 +55,14 @@
    <center>
       <TabPane prefHeight="281.0" prefWidth="459.0" styleClass="tabContainer" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="Contacto">
+          <Tab text="Persona contacto">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="277.0" prefWidth="464.0">
                      <children>
-                        <TextField fx:id="tfno_TextField" layoutX="126.0" layoutY="86.0" minWidth="100.0" onKeyReleased="#tfno_TextFieldHandler" prefHeight="23.0" prefWidth="115.0" />
+                        <TextField fx:id="tfno_TextField" layoutX="126.0" layoutY="86.0" minWidth="100.0" onKeyReleased="#tfno_TextFieldHandler" prefHeight="23.0" prefWidth="115.0">
+                           <tooltip>
+                              <Tooltip text="Teléfono de la persona de contacto" />
+                           </tooltip></TextField>
                         <Label layoutX="55.0" layoutY="52.0" text="Nombre: ">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
@@ -63,40 +73,52 @@
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="name_TextField" layoutX="126.0" layoutY="49.0" minWidth="100.0" onKeyReleased="#name_TextFieldHandler" prefHeight="23.0" prefWidth="217.0" />
+                        <TextField fx:id="name_TextField" layoutX="126.0" layoutY="49.0" minWidth="100.0" onKeyReleased="#name_TextFieldHandler" prefHeight="23.0" prefWidth="217.0">
+                           <tooltip>
+                              <Tooltip text="Nombre de la persona de contacto" />
+                           </tooltip></TextField>
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Datos Reserva">
+          <Tab text="Datos evento">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <DatePicker fx:id="dateEvent_DatePicker" layoutX="14.0" layoutY="96.0" />
-                        <Label layoutX="14.0" layoutY="77.0" text="Fecha evento:">
+                        <DatePicker fx:id="dateEvent_DatePicker" layoutX="10.0" layoutY="96.0" prefHeight="21.0" prefWidth="164.0">
+                           <tooltip>
+                              <Tooltip text="Día de inicio del evento" />
+                           </tooltip></DatePicker>
+                        <Label layoutX="10.0" layoutY="77.0" text="Fecha inicio:">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font></Label>
-                        <Label layoutX="14.0" layoutY="175.0" text="Tipo cocina: ">
+                        <Label layoutX="10.0" layoutY="175.0" text="Tipo cocina: ">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font></Label>
-                        <Label layoutX="14.0" layoutY="139.0" text="Nº Personas evento: ">
+                        <Label layoutX="10.0" layoutY="140.0" text="Nº asistentes: ">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font></Label>
-                        <TextField fx:id="cantPeople_TextField" layoutX="169.0" layoutY="135.0" onKeyReleased="#cantPeople_TextFieldHandler" prefHeight="23.0" prefWidth="31.0" />
-                        <VBox fx:id="eventTypeGroup_VBox" layoutX="220.0" layoutY="28.0" onMouseClicked="#eventTypeGroup_VBoxHandler" prefHeight="122.0" prefWidth="183.0" styleClass="buttonGroup" stylesheets="@bookLounge.css">
+                        <TextField fx:id="cantPeople_TextField" layoutX="120.0" layoutY="136.0" onKeyReleased="#cantPeople_TextFieldHandler" prefHeight="23.0" prefWidth="55.0">
+                           <tooltip>
+                              <Tooltip text="Cantidad de personas que asistirán al evento; Acepta rango: Ej.: 10-20" />
+                           </tooltip></TextField>
+                        <VBox layoutX="201.0" layoutY="28.0" prefHeight="130.0" prefWidth="208.0" styleClass="buttonGroup" stylesheets="@bookLounge.css">
                            <children>
-                              <Label fx:id="eventType_Gro" text="Tipo evento: ">
+                              <Label text="Tipo evento: ">
                                  <font>
                                     <Font name="DejaVu Sans Bold" size="13.0" />
                                  </font>
                                  <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
+                                 <tooltip>
+                                    <Tooltip text="Tipo de evento a celebrar" />
+                                 </tooltip>
                               </Label>
-                              <RadioButton fx:id="banket_RadioBtn" mnemonicParsing="false" text="Banquete">
+                              <RadioButton fx:id="banket_RadioBtn" mnemonicParsing="false" onMouseClicked="#eventTypeGroup_RButtonHandler" text="Banquete">
                                  <font>
                                     <Font name="DejaVu Sans" size="12.0" />
                                  </font>
@@ -107,7 +129,7 @@
                                     <Insets left="40.0" />
                                  </padding>
                               </RadioButton>
-                              <RadioButton fx:id="day_RadioBtn" mnemonicParsing="false" text="Jornada">
+                              <RadioButton fx:id="day_RadioBtn" mnemonicParsing="false" onMouseClicked="#eventTypeGroup_RButtonHandler" text="Jornada">
                                  <font>
                                     <Font name="DejaVu Sans" size="12.0" />
                                  </font>
@@ -118,7 +140,7 @@
                                     <Insets left="40.0" />
                                  </padding>
                               </RadioButton>
-                              <RadioButton fx:id="congress_RadioBtn" mnemonicParsing="false" text="Congreso">
+                              <RadioButton fx:id="congress_RadioBtn" mnemonicParsing="false" onMouseClicked="#eventTypeGroup_RButtonHandler" text="Congreso">
                                  <font>
                                     <Font name="DejaVu Sans" size="12.0" />
                                  </font>
@@ -134,20 +156,29 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </opaqueInsets>
                         </VBox>
-                        <ToggleButton fx:id="roomsNeed_ToggleButton" layoutX="203.0" layoutY="177.0" mnemonicParsing="false" onAction="#roomNeedToggleButtonHandler" prefHeight="36.0" prefWidth="218.0" styleClass="toggleButton-false" text="Requiere habitaciones: NO" textFill="WHITE">
+                        <ToggleButton fx:id="roomsNeed_ToggleButton" layoutX="200.0" layoutY="179.0" mnemonicParsing="false" onAction="#roomNeedToggleButtonHandler" prefHeight="35.0" prefWidth="211.0" styleClass="toggleButton-false" text="Requieren habitaciones: NO" textFill="WHITE">
                            <font>
-                              <Font name="DejaVu Sans Bold" size="13.0" />
+                              <Font name="DejaVu Sans Bold" size="12.0" />
                            </font>
                            <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding></ToggleButton>
-                        <ChoiceBox fx:id="cucineType_ChoiceBox" layoutX="14.0" layoutY="193.0" prefWidth="150.0" />
-                        <Label layoutX="17.0" layoutY="20.0" text="Salón:">
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                           <tooltip>
+                              <Tooltip text="Los asistentes van a requerir habitaciones" />
+                           </tooltip></ToggleButton>
+                        <ChoiceBox fx:id="cucineType_ChoiceBox" layoutX="10.0" layoutY="193.0" prefHeight="21.0" prefWidth="166.0">
+                           <tooltip>
+                              <Tooltip text="Tipo de cocina que se usará en evento" />
+                           </tooltip></ChoiceBox>
+                        <Label layoutX="13.0" layoutY="20.0" text="Salón:">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font>
                         </Label>
-                        <ChoiceBox fx:id="lounge_ChoiceBox" layoutX="14.0" layoutY="38.0" prefHeight="21.0" prefWidth="171.0" />
+                        <ChoiceBox fx:id="lounge_ChoiceBox" layoutX="10.0" layoutY="38.0" prefHeight="21.0" prefWidth="165.0">
+                           <tooltip>
+                              <Tooltip text="Salón donde se celebrará el evento" />
+                           </tooltip></ChoiceBox>
                      </children>
                   </AnchorPane>
             </content>
@@ -170,13 +201,16 @@
          <bottom>
             <VBox alignment="CENTER" prefHeight="49.0" prefWidth="101.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="104.0" text="Guardar">
+                  <Button fx:id="save_Button" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#showConfirmation" prefHeight="25.0" prefWidth="104.0" text="Guardar">
                      <font>
                         <Font name="DejaVu Sans Bold" size="15.0" />
                      </font>
                      <VBox.margin>
                         <Insets bottom="15.0" />
                      </VBox.margin>
+                     <tooltip>
+                        <Tooltip text="Guardar la reserva del salón" />
+                     </tooltip>
                   </Button>
                </children>
             </VBox>
@@ -186,6 +220,9 @@
                <BorderPane.margin>
                   <Insets top="30.0" />
                </BorderPane.margin>
+               <tooltip>
+                  <Tooltip text="Porcentaje de datos válidos" />
+               </tooltip>
             </ProgressIndicator>
          </top>
          <BorderPane.margin>
