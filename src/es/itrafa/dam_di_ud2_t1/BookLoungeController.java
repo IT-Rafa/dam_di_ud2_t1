@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -50,12 +52,6 @@ public class BookLoungeController implements Initializable {
     private ProgressIndicator form_ProgressIndicator;
     @FXML
     private Label eventType_Gro;
-
-
-
-
-
-
 
     private enum data {
         NAME, TFNO, LOUNGE, EVENTTYPE, EVENTDATE, CUCINETYPE, CANTPEOPLE
@@ -104,11 +100,29 @@ public class BookLoungeController implements Initializable {
         }
 
         // Add values to choose in lounge
-        ObservableList<String> loungeList
-                = FXCollections.observableArrayList("Salón Habana", "Otro Salón");
-        lounge_ChoiceBox.setItems(loungeList);
+        lounge_ChoiceBox.getItems().add("Salón Habana");
+        lounge_ChoiceBox.getItems().add("Otro Salón");
+
+        // Add listener to lounge. OPTIONS IN SCENE BUILDER DON´T WORK OK
+        lounge_ChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> selected, String oldValue, String newValue) {
+                lounge_ChoiceBoxHandler(newValue);
+            }
+        });
 
         // Add values to choose in cucineTypes
+        cucineType_ChoiceBox.getItems().add("Salón Habana");
+        cucineType_ChoiceBox.getItems().add("Otro Salón");
+
+        // Add listener to lounge. OPTIONS IN SCENE BUILDER DON´T WORK OK
+        cucineType_ChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> selected, String oldValue, String newValue) {
+                cucineType_ChoiceBoxHandler(newValue);
+            }
+        });
+
         ObservableList<String> cucineTypes
                 = FXCollections.observableArrayList("Buffet", "Carta", "Cita con chef", "No precisa");
         cucineType_ChoiceBox.setItems(cucineTypes);
@@ -118,13 +132,6 @@ public class BookLoungeController implements Initializable {
         day_RadioBtn.setToggleGroup(eventTypeTGroup);
         congress_RadioBtn.setToggleGroup(eventTypeTGroup);
 
-        lounge_ChoiceBox .getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-      @Override
-      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-        System.out.println(box.getItems().get((Integer) number2));
-      }
-    });
-        
     }
 
     @FXML
@@ -196,11 +203,13 @@ public class BookLoungeController implements Initializable {
         updateProgress();
     }
 
-    // LOUNGE (FAIL)
+    // LOUNGE 
+    private void lounge_ChoiceBoxHandler(String newValue) {
+        LOGGER.info("lounge modificado a "+ newValue);
+        progress[data.LOUNGE.ordinal()] = true;
+        updateProgress();
+    }
 
-    
-    
-    
     // EVENTTYPE
     @FXML
     private void eventTypeGroup_VBoxHandler(MouseEvent event) {
@@ -212,7 +221,12 @@ public class BookLoungeController implements Initializable {
     // EVENTDATE
 
     // CUCINETYPE
-    @FXML
+    private void cucineType_ChoiceBoxHandler(String newValue) {
+        LOGGER.info("cucineType modificado a "+ newValue);
+        progress[data.CUCINETYPE.ordinal()] = true;
+        updateProgress();
+    }
+
     private void cucineType_ChoiceBoxHandler(ScrollEvent event) {
         LOGGER.info("tipo cocina modificado");
 
