@@ -33,6 +33,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -43,14 +44,18 @@ import javafx.stage.Stage;
  */
 public class BookLoungeController implements Initializable {
 
+    private static Logger LOGGER = Logger.getLogger("itrafaLog");
+
     @FXML
     private ProgressIndicator form_ProgressIndicator;
     @FXML
     private Label eventType_Gro;
 
-    @FXML
-    private void name_TextFieldHandler(KeyEvent event) {
-    }
+
+
+
+
+
 
     private enum data {
         NAME, TFNO, LOUNGE, EVENTTYPE, EVENTDATE, CUCINETYPE, CANTPEOPLE
@@ -84,7 +89,7 @@ public class BookLoungeController implements Initializable {
     @FXML
     private TextField name_TextField;
     @FXML
-    private TextField cantPeople_TxtField;
+    private TextField cantPeople_TextField;
 
     /**
      * Initializes the controller class.
@@ -92,51 +97,49 @@ public class BookLoungeController implements Initializable {
     @Override
 
     public void initialize(URL url, ResourceBundle rb) {
-        // , 
+        // Initialize bar progress
         progress = new boolean[data.values().length];
         for (boolean v : progress) {
             v = false;
         }
 
-        name_TextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            progress[data.NAME.ordinal()] = !name_TextField.getText().isEmpty();
-            updateProgress();
-        });
-
-        ObservableList<String> cucineTypes
-                = FXCollections.observableArrayList("Buffet", "Carta", "Cita con chef", "No precisa");
-        cucineType_ChoiceBox.setItems(cucineTypes);
-
+        // Add values to choose in lounge
         ObservableList<String> loungeList
                 = FXCollections.observableArrayList("Salón Habana", "Otro Salón");
         lounge_ChoiceBox.setItems(loungeList);
 
+        // Add values to choose in cucineTypes
+        ObservableList<String> cucineTypes
+                = FXCollections.observableArrayList("Buffet", "Carta", "Cita con chef", "No precisa");
+        cucineType_ChoiceBox.setItems(cucineTypes);
+
+        // group radioButton to choose only one
         banket_RadioBtn.setToggleGroup(eventTypeTGroup);
         day_RadioBtn.setToggleGroup(eventTypeTGroup);
         congress_RadioBtn.setToggleGroup(eventTypeTGroup);
 
+        lounge_ChoiceBox .getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+      @Override
+      public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+        System.out.println(box.getItems().get((Integer) number2));
+      }
+    });
+        
     }
 
     @FXML
     private void updateProgress() {
-        int actualProgress = 0;
+        LOGGER.info("Actualizando barra progreso");
+        double actualProgress = 0;
 
         for (boolean v : progress) {
             if (v) {
-                System.out.println(v + "= true");
                 actualProgress++;
-            } else {
-                System.out.println(v + "= false");
             }
         }
-        double initProgress = actualProgress / progress.length;
-        System.out.println("initProgress:" + initProgress);
 
-        double porcentProgress = initProgress * 100;
-        System.out.println("porcentProgress:" + porcentProgress);
-        
-        form_ProgressIndicator.setProgress(porcentProgress);
-        System.out.println("insertado:" + form_ProgressIndicator.getProgress());
+        actualProgress /= progress.length;
+        form_ProgressIndicator.setProgress(actualProgress);
     }
 
     @FXML
@@ -148,7 +151,7 @@ public class BookLoungeController implements Initializable {
     @FXML
     private void switchScene(ActionEvent event) {
         Parent root;
-        Scene scene;
+
         Control control = (Control) event.getSource();
         Stage stage = (Stage) control.getScene().getWindow();
         try {
@@ -160,18 +163,79 @@ public class BookLoungeController implements Initializable {
             }
 
             //Crear una nueva escena con raíz y establecer el escenario
-            scene = new Scene(root);
+            Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
 
         } catch (IOException ex) {
-            Logger.getLogger(BooksMenuController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe("Posible error al acceder al recurso xml");
         }
 
     }
 
+    // CHECK INPUT AND PROGRESS BAR METHODS
+    // NAME
+    @FXML
+    private void name_TextFieldHandler(KeyEvent event) {
+        LOGGER.info("nombre modificado");
+
+        // check value and mark it if is ok
+        progress[data.NAME.ordinal()] = !name_TextField.getText().isEmpty();
+        // calculate and show new bar progress value
+        updateProgress();
+    }
+
+    // TFNO
+    @FXML
+    private void tfno_TextFieldHandler(KeyEvent event) {
+        LOGGER.info("telefono modificado");
+
+        // check value and mark it if is ok
+        progress[data.TFNO.ordinal()] = !tfno_TextField.getText().isEmpty();
+        // calculate and show new bar progress value
+        updateProgress();
+    }
+
+    // LOUNGE (FAIL)
+
+    
+    
+    
+    // EVENTTYPE
+    @FXML
+    private void eventTypeGroup_VBoxHandler(MouseEvent event) {
+        LOGGER.info("tipo evento modificado");
+
+        progress[data.EVENTTYPE.ordinal()] = eventTypeTGroup.getSelectedToggle().isSelected();
+        updateProgress();
+    }
+    // EVENTDATE
+
+    // CUCINETYPE
+    @FXML
+    private void cucineType_ChoiceBoxHandler(ScrollEvent event) {
+        LOGGER.info("tipo cocina modificado");
+
+        progress[data.CUCINETYPE.ordinal()] = cucineType_ChoiceBox.getValue() == null;
+        updateProgress();
+    }
+
+    // CANTPEOPLE
+    @FXML
+    private void cantPeople_TextFieldHandler(KeyEvent event) {
+        LOGGER.info("cantidadGente modificado");
+
+        // check value and mark it if is ok
+        progress[data.CANTPEOPLE.ordinal()] = !cantPeople_TextField.getText().isEmpty();
+        // calculate and show new bar progress value
+        updateProgress();
+    }
+
+    // NEEDROMS ( NO PROGRESS CHECK cause both options are valid)
     @FXML
     private void roomNeedToggleButtonHandler(ActionEvent event) {
+        LOGGER.info("necesitanHabitaciones modificado");
+
         roomsNeed_ToggleButton.getStyleClass().clear();
 
         if (roomsNeed_ToggleButton.isSelected()) {
@@ -181,44 +245,6 @@ public class BookLoungeController implements Initializable {
             roomsNeed_ToggleButton.getStyleClass().add("toggleButton-false");
             roomsNeed_ToggleButton.setText("Requiere habitaciones: NO");
         }
-    }
-
-    private void name_TextFieldHandler(ActionEvent event) {
-        System.out.println("tocaste nombre");
-        progress[data.NAME.ordinal()] = !name_TextField.getText().isEmpty();
-        updateProgress();
-    }
-
-    @FXML
-    private void tfno_TextFieldHandler(ActionEvent event) {
-
-        progress[data.TFNO.ordinal()] = !tfno_TextField.getText().isEmpty();
-        updateProgress();
-    }
-
-    @FXML
-    private void cantPeople_TxtFieldHandler(ActionEvent event) {
-        progress[data.CANTPEOPLE.ordinal()] = !cantPeople_TxtField.getText().isEmpty();
-
-        updateProgress();
-    }
-
-    @FXML
-    private void eventTypeGroup_VBoxHandler(MouseEvent event) {
-        progress[data.EVENTTYPE.ordinal()] = eventTypeTGroup.getSelectedToggle().isSelected();
-        updateProgress();
-    }
-
-    @FXML
-    private void cucineType_ChoiceBoxHandler(DragEvent event) {
-        progress[data.CUCINETYPE.ordinal()] = cucineType_ChoiceBox.getValue() == null;
-        updateProgress();
-    }
-
-    @FXML
-    private void lounge_ChoiceBoxHandler(DragEvent event) {
-        progress[data.LOUNGE.ordinal()] = lounge_ChoiceBox.getValue() == null;
-        updateProgress();
     }
 
 }

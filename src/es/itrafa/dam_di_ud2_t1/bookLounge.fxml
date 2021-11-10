@@ -52,7 +52,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="277.0" prefWidth="464.0">
                      <children>
-                        <TextField fx:id="tfno_TextField" layoutX="126.0" layoutY="86.0" minWidth="100.0" onAction="#tfno_TextFieldHandler" prefHeight="23.0" prefWidth="115.0" />
+                        <TextField fx:id="tfno_TextField" layoutX="126.0" layoutY="86.0" minWidth="100.0" onKeyReleased="#tfno_TextFieldHandler" prefHeight="23.0" prefWidth="115.0" />
                         <Label layoutX="55.0" layoutY="52.0" text="Nombre: ">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
@@ -63,7 +63,7 @@
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="name_TextField" layoutX="126.0" layoutY="49.0" minWidth="100.0" prefHeight="23.0" prefWidth="217.0" />
+                        <TextField fx:id="name_TextField" layoutX="126.0" layoutY="49.0" minWidth="100.0" onKeyReleased="#name_TextFieldHandler" prefHeight="23.0" prefWidth="217.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -85,7 +85,7 @@
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font></Label>
-                        <TextField fx:id="cantPeople_TxtField" layoutX="169.0" layoutY="135.0" onAction="#cantPeople_TxtFieldHandler" prefHeight="23.0" prefWidth="31.0" />
+                        <TextField fx:id="cantPeople_TextField" layoutX="169.0" layoutY="135.0" onKeyReleased="#cantPeople_TextFieldHandler" prefHeight="23.0" prefWidth="31.0" />
                         <VBox fx:id="eventTypeGroup_VBox" layoutX="220.0" layoutY="28.0" onMouseClicked="#eventTypeGroup_VBoxHandler" prefHeight="122.0" prefWidth="183.0" styleClass="buttonGroup" stylesheets="@bookLounge.css">
                            <children>
                               <Label fx:id="eventType_Gro" text="Tipo evento: ">
@@ -141,13 +141,13 @@
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding></ToggleButton>
-                        <ChoiceBox fx:id="cucineType_ChoiceBox" layoutX="14.0" layoutY="193.0" onDragDone="#cucineType_ChoiceBoxHandler" prefWidth="150.0" />
+                        <ChoiceBox fx:id="cucineType_ChoiceBox" layoutX="14.0" layoutY="193.0" onScrollFinished="#cucineType_ChoiceBoxHandler" prefWidth="150.0" />
                         <Label layoutX="17.0" layoutY="20.0" text="Salón:">
                            <font>
                               <Font name="DejaVu Sans Bold" size="13.0" />
                            </font>
                         </Label>
-                        <ChoiceBox fx:id="lounge_ChoiceBox" layoutX="14.0" layoutY="38.0" onDragDone="#lounge_ChoiceBoxHandler" prefHeight="21.0" prefWidth="171.0" />
+                        <ChoiceBox fx:id="lounge_ChoiceBox" layoutX="14.0" layoutY="38.0" onScrollFinished="#lounge_ChoiceBoxHandler" prefHeight="21.0" prefWidth="171.0" />
                      </children>
                   </AnchorPane>
             </content>
